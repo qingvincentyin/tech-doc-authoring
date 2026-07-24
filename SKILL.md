@@ -17,7 +17,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Tech Doc Authoring
@@ -47,6 +47,10 @@ To link to a non-heading location — a paragraph, a `**Note:**`, a blockquote, 
 ## Image Anchors
 
 Exception for an **image** target: put the anchor on its own line before the image, separated by a **blank line** (so the anchor sits in its own paragraph, with the `![...]` in the next block), not on the same line. On the same line the browser jumps to the *end* of the image and scrolls past it, missing the screenshot. A single line break with no blank line fixes some renderers (markdown-it) but not the GitHub web UI, which still scrolls past — the blank line is required for GitHub and works everywhere. With the blank line, the jump lands at the *top* of the image. This is the one non-heading target where a separate block is correct, overriding the same-line rule above.
+
+## Mermaid Diagram Labels
+
+For a line break inside any Mermaid label — node text, edge label, `note for ...`, subgraph title — use `<br/>`, never `\n`. `<br/>` is the portable break that renders everywhere the user's diagrams appear (GitHub, markdown-it, the consistency-check pipeline, artifacts). `\n` is renderer- and diagram-type-dependent: some renderers ignore it or print it literally. Standardizing on `<br/>` also matches the existing System Diagrams in the guides (which use `<br/>` and `&nbsp;`). Related global rule: call a connector between nodes an "arrow", not an "edge".
 
 ## Bidirectional Cross-Links
 
