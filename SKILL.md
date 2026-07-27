@@ -9,15 +9,16 @@ description: >
   entry, or an inline HTML anchor. Trigger on: "write this section", "add a heading",
   "link to section X", "cross-reference the other guide", "add an anchor", "insert an
   image", "edit the doc". Covers hard-wrap rules, in-doc and cross-doc link construction,
-  GFM slug anchors, non-heading and image anchors, bidirectional cross-links, title-case
-  headings, sibling-heading numbering, empty-section-preamble tolerance, list-vs-inline
-  enumeration, and pretty-printing an embedded JSON string. Do NOT use this for auditing a
+  GFM slug anchors, non-heading and image anchors, hyperlinking figure/diagram/table
+  references, bidirectional cross-links, title-case headings, sibling-heading numbering,
+  empty-section-preamble tolerance, list-vs-inline enumeration, and pretty-printing an
+  embedded JSON string. Do NOT use this for auditing a
   finished doc (use tech-doc-consistency-check) or for general prose style (that stays in
   the user's global CLAUDE.md).
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.1.1"
+  version: "1.2.0"
 ---
 
 # Tech Doc Authoring
@@ -47,6 +48,16 @@ To link to a non-heading location — a paragraph, a `**Note:**`, a blockquote, 
 ## Image Anchors
 
 Exception for an **image** target: put the anchor on its own line before the image, separated by a **blank line** (so the anchor sits in its own paragraph, with the `![...]` in the next block), not on the same line. On the same line the browser jumps to the *end* of the image and scrolls past it, missing the screenshot. A single line break with no blank line fixes some renderers (markdown-it) but not the GitHub web UI, which still scrolls past — the blank line is required for GitHub and works everywhere. With the blank line, the jump lands at the *top* of the image. This is the one non-heading target where a separate block is correct, overriding the same-line rule above.
+
+## Referencing a Figure, Diagram, or Table
+
+When prose refers to a captioned object in the same doc — a Figure, System Diagram, Table, Listing, or the like — make the reference a Markdown hyperlink to that object, the same way an in-document `§X` reference is hyperlinked. Do not leave a plain-text "Figure 3" or "Table 2" behind.
+
+Create the target anchor if it does not exist yet. A caption is a non-heading target, so it needs an explicit `<a id>` (a heading's auto GFM slug does not apply). Use a stable kebab-case id that names the object: `figure-3`, `system-diagram-6`, `table-2`. Place the anchor per the anchor rules above — inline at the start of a **text** caption (`<a id="figure-3"></a>**Figure 3: …**`, so the reader lands on the caption with the object right below), or on its own line before a blank line when the target is an actual `![...]` image (the image-anchor exception).
+
+Point the reference at the caption anchor, never at the enclosing section heading. Linking "Figure 2" to its section's heading slug lands the reader at the section top, not the figure, and silently breaks if the figure moves within the section or a sibling figure is added ahead of it.
+
+Only anchor the doc's own captioned objects. A caption borrowed from an external source (e.g. "RFC 6749's own Figure 3") stays plain text — it is not a target in this doc.
 
 ## Mermaid Diagrams
 
