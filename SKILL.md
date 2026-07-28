@@ -18,7 +18,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.3.0"
+  version: "1.5.0"
 ---
 
 # Tech Doc Authoring
@@ -85,7 +85,17 @@ An "empty section preamble" is fine. A section heading may be immediately follow
 
 Prefer a list over a paragraph that enumerates items inline — whether parallel/comparative ("A carries X, while B carries Y"; "on one hand… on the other…"; "if ADK then… if A2A then…"; "A does X, after which B does Y") or inline-enumerated ("(1)…, (2)…, (3)…"; "(a)…, (b)…, (c)…"; "(i)…, (ii)…, (iii)…"). Use a **numbered list** when items are sequential steps or when surrounding prose may need to refer to a specific item by number; use a **bullet list** for unordered parallel or comparative items. Use a lead-in clause ending in ":", one item per entry, and any non-parallel prose that follows as a separate paragraph after the list — never appended to the last item. Inside a parent list item, that means a blank line followed by indented continuation text. Keep prose for narrative/causal flow where sentences connect and for a single short comparison.
 
+**Trigger — announcing a count commits you to a list.** The moment you write a cardinal followed by a countable noun ("Two things differ", "3 reasons", "four main differences", "two ways", "several caveats"), you have promised the reader an enumeration. Deliver it as a Markdown list or a table, never as the following prose sentence. This is the single most-missed case of the rule above, because the inline form reads fine one sentence at a time — "Two things differ. The path carries an extra segment, and the URL uses a number." — and only the promise makes it wrong. Treat the count word itself as the cue: on writing it, stop and set up a `:` lead-in with bullets.
+
+The trigger does **not** fire on a back-reference to something already enumerated — "the two forms", "all four types", "the same 3 steps". A definite determiner before the number marks it as a pointer backward, not a promise forward.
+
 **Mixed-altitude passages — commit the structure, and use the list as a diagnostic.** A flat paragraph linearizes the logical tree of its sentences: some are parallel siblings, and one may be a summary that closes over several earlier ones. Flattening loses that shape, so adjacency implies false parentage — a sentence that concludes *several* earlier ones, left trailing after the last, reads as elaborating only that last one. When a passage mixes per-item detail with a cross-item conclusion, structure it up front: a list for the parallel items, then the conclusion as its own paragraph after the list (per the rule above). The list is also a diagnostic. If you cannot place every sentence as either a parallel leaf or the closing summary, the paragraph has a hidden scoping error.
+
+## Write to the Reader's Altitude
+
+Include a fact only if the target reader needs the concept at that point in the doc. The test is not "is it true" or "is it a real API" — it is "does *this reader* need this *here*." A fact can be accurate and still not belong: harness-internals and access-mechanism detail sit below the line of a reader who only writes application code, so they are cut even when correct. Name the reader for the passage (e.g. the `agent.py` author, the operator, the client developer), keep what that reader must know to use the thing, and drop what only its maintainer would.
+
+This is why a concept primer omits the plumbing that *implements* the concept. Example — a Session/State primer for an app developer: keep `session`, `state`, and what the framework deposits there; cut the classes that drive the runtime (`Runner`, the session-service implementation) and the several code surfaces that reach state (`ToolContext.state`, `callback_context.state`, `invocation_context.session.state`). The reader never writes them, so naming one implies a precision it lacks and naming all is sprawl. This is distinct from concision, which trims wordiness: this rule decides inclusion by *whose need*, and it can cut a whole true subtopic, not just words.
 
 ## Pretty-Printing an Embedded JSON String
 
