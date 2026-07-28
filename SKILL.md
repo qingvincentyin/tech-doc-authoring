@@ -18,7 +18,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Tech Doc Authoring
@@ -96,6 +96,12 @@ The trigger does **not** fire on a back-reference to something already enumerate
 Include a fact only if the target reader needs the concept at that point in the doc. The test is not "is it true" or "is it a real API" — it is "does *this reader* need this *here*." A fact can be accurate and still not belong: harness-internals and access-mechanism detail sit below the line of a reader who only writes application code, so they are cut even when correct. Name the reader for the passage (e.g. the `agent.py` author, the operator, the client developer), keep what that reader must know to use the thing, and drop what only its maintainer would.
 
 This is why a concept primer omits the plumbing that *implements* the concept. Example — a Session/State primer for an app developer: keep `session`, `state`, and what the framework deposits there; cut the classes that drive the runtime (`Runner`, the session-service implementation) and the several code surfaces that reach state (`ToolContext.state`, `callback_context.state`, `invocation_context.session.state`). The reader never writes them, so naming one implies a precision it lacks and naming all is sprawl. This is distinct from concision, which trims wordiness: this rule decides inclusion by *whose need*, and it can cut a whole true subtopic, not just words.
+
+## Fencing a Mixed Command-Plus-Output Block
+
+When one code block shows a shell command followed by its JSON output, fence it as ```` ```json ```` — not ```` ```console ````, ```` ```shell ````, or ```` ```text ````. The JSON is the bulk of the block and the part the reader studies, so pretty-printing it is what matters. A `console`/`shell`/`text` fence renders the JSON flat and unhighlighted, which loses far more than it gains. The cost is that the 2 or 3 leading `$ curl …` lines highlight oddly, and that cost is accepted deliberately.
+
+Never "correct" such a fence to a shell language, and never report the language as a mismatch — it is an intentional choice about which half of the block gets good rendering.
 
 ## Pretty-Printing an Embedded JSON String
 
