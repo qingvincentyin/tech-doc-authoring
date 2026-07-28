@@ -18,7 +18,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Tech Doc Authoring
@@ -84,6 +84,8 @@ An "empty section preamble" is fine. A section heading may be immediately follow
 ## List vs. Inline Enumeration
 
 Prefer a list over a paragraph that enumerates items inline — whether parallel/comparative ("A carries X, while B carries Y"; "on one hand… on the other…"; "if ADK then… if A2A then…"; "A does X, after which B does Y") or inline-enumerated ("(1)…, (2)…, (3)…"; "(a)…, (b)…, (c)…"; "(i)…, (ii)…, (iii)…"). Use a **numbered list** when items are sequential steps or when surrounding prose may need to refer to a specific item by number; use a **bullet list** for unordered parallel or comparative items. Use a lead-in clause ending in ":", one item per entry, and any non-parallel prose that follows as a separate paragraph after the list — never appended to the last item. Inside a parent list item, that means a blank line followed by indented continuation text. Keep prose for narrative/causal flow where sentences connect and for a single short comparison.
+
+**Mixed-altitude passages — commit the structure, and use the list as a diagnostic.** A flat paragraph linearizes the logical tree of its sentences: some are parallel siblings, and one may be a summary that closes over several earlier ones. Flattening loses that shape, so adjacency implies false parentage — a sentence that concludes *several* earlier ones, left trailing after the last, reads as elaborating only that last one. When a passage mixes per-item detail with a cross-item conclusion, structure it up front: a list for the parallel items, then the conclusion as its own paragraph after the list (per the rule above). The list is also a diagnostic. If you cannot place every sentence as either a parallel leaf or the closing summary, the paragraph has a hidden scoping error.
 
 ## Pretty-Printing an Embedded JSON String
 
