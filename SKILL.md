@@ -18,7 +18,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.7.0"
+  version: "1.8.0"
 ---
 
 # Tech Doc Authoring
@@ -80,6 +80,16 @@ When adding a heading to an existing document, match the convention of a nearby 
 ## Empty Section Preamble
 
 An "empty section preamble" is fine. A section heading may be immediately followed by a subheading with no text between them (e.g. an `##` heading directly followed by its first `###`). Do not flag this as an issue, and do not insert filler text just to fill the gap. Add a lead-in paragraph only when it carries real orienting content.
+
+## Cold Open
+
+A section may open directly on its first line of content, with no orienting lead-in. The heading has already named the subject, so a paragraph restating it adds nothing. Do not flag a cold open, and do not propose adding a lead-in — not when the section follows code blocks, not when it follows another section's conclusion, and not when the first line is a bare list lead-in.
+
+The user's guide docs use a settled cold-open form for a walkthrough: the heading, then `<Actor> starts like this:`, then the list of steps. Infra Guide §5.3.1 opens `Bob starts like this:` and §6.3.2.4 opens `Peter (the end user) starts like this:`. Both are deliberate.
+
+Add a lead-in only when it carries orienting content the heading does not — a scope limit, a prerequisite, or a pointer the reader needs before step 1. "The reader just came from a code block and needs easing in" is not such content.
+
+(Set 2026-07-29, after I flagged §6.3.2.4's cold open twice and the user pointed at §5.3.1 as the established precedent.)
 
 ## List vs. Inline Enumeration
 
