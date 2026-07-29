@@ -18,7 +18,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Tech Doc Authoring
@@ -96,6 +96,14 @@ The trigger does **not** fire on a back-reference to something already enumerate
 Include a fact only if the target reader needs the concept at that point in the doc. The test is not "is it true" or "is it a real API" — it is "does *this reader* need this *here*." A fact can be accurate and still not belong: harness-internals and access-mechanism detail sit below the line of a reader who only writes application code, so they are cut even when correct. Name the reader for the passage (e.g. the `agent.py` author, the operator, the client developer), keep what that reader must know to use the thing, and drop what only its maintainer would.
 
 This is why a concept primer omits the plumbing that *implements* the concept. Example — a Session/State primer for an app developer: keep `session`, `state`, and what the framework deposits there; cut the classes that drive the runtime (`Runner`, the session-service implementation) and the several code surfaces that reach state (`ToolContext.state`, `callback_context.state`, `invocation_context.session.state`). The reader never writes them, so naming one implies a precision it lacks and naming all is sprawl. This is distinct from concision, which trims wordiness: this rule decides inclusion by *whose need*, and it can cut a whole true subtopic, not just words.
+
+## Mark Every Omission Inside a Code or Capture Block
+
+When you abridge anything inside a fenced block — omitted HTTP headers, dropped JSON fields, skipped code, truncated output — mark the cut **in the block** with a bare `...` line at the point of the omission. Saying "abridged" in the surrounding prose is not enough on its own. The reader studies the block, not the lead-in, and an unmarked cut silently misrepresents the block as complete.
+
+Put the marker where the removed content was, at the indentation of its neighbors. A bare `...` on its own line is the form for a cut between lines (headers, statements, array elements); an inline `{ ... }` or `"parameters": { ... }` is the form for a collapsed object or argument list. Keep the surrounding prose's "abridged" note as well — the two work together, the prose explaining *why* and the marker showing *where*.
+
+Redaction is a separate act from omission and gets its own marker, so do not collapse the two. Replacing a secret's value keeps the field visible and only hides what it held (`Bearer ya29.******<REDACTED, the parent runtime SA>******`), whereas `...` says a field or line is missing entirely. Match whatever redaction idiom the doc already uses, and preserve any non-secret prefix that carries meaning — a `ya29.` left in front of a redacted token still tells the reader what kind of credential it is.
 
 ## Fencing a Mixed Command-Plus-Output Block
 
