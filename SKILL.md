@@ -12,13 +12,13 @@ description: >
   GFM slug anchors, non-heading and image anchors, hyperlinking figure/diagram/table
   references, bidirectional cross-links, title-case headings, sibling-heading numbering,
   empty-section-preamble tolerance, list-vs-inline enumeration, color-blind-safe diagram
-  color, and pretty-printing an embedded JSON string. Do NOT use this for auditing a
+  color and palette economy, and pretty-printing an embedded JSON string. Do NOT use this for auditing a
   finished doc (use tech-doc-consistency-check) or for general prose style (that stays in
   the user's global CLAUDE.md).
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.9.0"
+  version: "1.10.0"
 ---
 
 # Tech Doc Authoring
@@ -81,6 +81,18 @@ grep -o 'marker-end="[^"]*"' diagram.svg | sort | uniq -c
 ```
 
 Verify color changes by rendering, never by reading the source. Related: the `reference-mermaid-cli-diagram-verification` memory.
+
+### Keep the Palette Small
+
+Every distinct color in a diagram reads as a claim that something differs. A diagram that gives each distinction its own color becomes a mosaic, and it communicates less than one built from a few coarse colors. Two rules follow.
+
+**Do not spend a color on a meaning another channel already carries.** Topology, shape, position, line style, and label text all encode meaning, and unlike color they survive greyscale and any color deficiency. A node that a dozen arrows converge on is already visibly the centerpiece of the diagram, so a unique border color for it buys nothing and costs a hue. Before adding a color, name the channel that would be missing without it. If you cannot, do not add it. This is the converse of the never-only-color rule above: color must never be the sole channel, and it must not be a redundant one either.
+
+**Sharing one color across boxes that mean different things is an acceptable trade, not a defect.** Weigh palette size against precision. Reserve distinct colors for the differences the section is actually about, and let everything else share. "Same color, different meaning" is only a real problem when the reader must tell those things apart to follow the diagram. Do not propose recoloring on the grounds of exactness alone.
+
+In practice, prefer adding a node to an existing `classDef` over writing a one-off `style` line for it. That removes the exception rather than restyling it, and it keeps the palette from growing one node at a time.
+
+(Set 2026-08-04. I had recommended 6 edits to fix a shared green that no reader would have been confused by, and separately kept a unique color on a node whose importance the arrows already showed.)
 
 ## Bidirectional Cross-Links
 
