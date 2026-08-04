@@ -18,7 +18,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.10.0"
+  version: "1.11.0"
 ---
 
 # Tech Doc Authoring
@@ -91,6 +91,10 @@ Every distinct color in a diagram reads as a claim that something differs. A dia
 **Sharing one color across boxes that mean different things is an acceptable trade, not a defect.** Weigh palette size against precision. Reserve distinct colors for the differences the section is actually about, and let everything else share. "Same color, different meaning" is only a real problem when the reader must tell those things apart to follow the diagram. Do not propose recoloring on the grounds of exactness alone.
 
 In practice, prefer adding a node to an existing `classDef` over writing a one-off `style` line for it. That removes the exception rather than restyling it, and it keeps the palette from growing one node at a time.
+
+**Never leave a node or subgraph on mermaid's default styling.** An unstyled node renders `#ECECFF` on `#9370DB` purple, and an unstyled subgraph renders `#ffffde` on `#aaaa33` yellow. Those are theme defaults nobody chose, and nothing in the output distinguishes them from a deliberate decision — so a reader takes the purple as a category that means something. Give every node a `classDef` and every subgraph an explicit `style`, even where the value you pick is close to the default it replaces.
+
+**Use one color for all subgraphs, at every nesting depth.** A nested region does not get its own fill. The nesting already shows containment and the subgraph title already names the region, so a second color spends a hue on what 2 channels carry. The inner box stays legible regardless, because its own stroke still draws the outline. Vary a subgraph only when it differs in *kind* rather than in position — a conceptual grouping versus a deployment boundary, say — and express that with `stroke-dasharray` rather than with another color.
 
 (Set 2026-08-04. I had recommended 6 edits to fix a shared green that no reader would have been confused by, and separately kept a unique color on a node whose importance the arrows already showed.)
 
