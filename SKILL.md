@@ -11,14 +11,14 @@ description: >
   image", "edit the doc". Covers hard-wrap rules, in-doc and cross-doc link construction,
   GFM slug anchors, non-heading and image anchors, hyperlinking figure/diagram/table
   references, bidirectional cross-links, title-case headings, sibling-heading numbering,
-  empty-section-preamble tolerance, list-vs-inline enumeration, and pretty-printing an
-  embedded JSON string. Do NOT use this for auditing a
+  empty-section-preamble tolerance, list-vs-inline enumeration, color-blind-safe diagram
+  color, and pretty-printing an embedded JSON string. Do NOT use this for auditing a
   finished doc (use tech-doc-consistency-check) or for general prose style (that stays in
   the user's global CLAUDE.md).
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # Tech Doc Authoring
@@ -64,6 +64,23 @@ Only anchor the doc's own captioned objects. A caption borrowed from an external
 For a line break inside any Mermaid label — node text, edge label, `note for ...`, subgraph title — use `<br/>`, never `\n`. `<br/>` is the portable break that renders everywhere the user's diagrams appear (GitHub, markdown-it, the consistency-check pipeline, artifacts). `\n` is renderer- and diagram-type-dependent: some renderers ignore it or print it literally. Standardizing on `<br/>` also matches the existing System Diagrams in the guides (which use `<br/>` and `&nbsp;`). Related global rule: call a connector between nodes an "arrow", not an "edge".
 
 Fold a node's annotation INTO the node, not into a floating note box. A `note for X` (classDiagram) or a detached note node renders as its own box, competing visually with the real nodes and pulling the reader's eye away from the topology. Put the annotation text inside the class body (or node label) instead. Reserve a separate note only when the annotation genuinely belongs to no single node. Prefer conveying a structural fact through the arrows themselves over restating it in text.
+
+### Diagram Color Must Survive Color Blindness
+
+**The user is color blind.** These rules are not a nicety; a diagram that fails them is unreadable to its primary reader.
+
+**Color is never the only channel.** Any distinction a diagram draws — works vs blocked, primary vs secondary, changed vs unchanged — must survive being read in greyscale. Carry it on at least one non-color channel as well: line style (solid vs dotted), terminator shape (arrowhead vs `x`), border weight, or explicit label text. Color is then reinforcement, never the message itself. This rule outranks the palette rule below, because a palette blocklist only names the combinations already known to fail.
+
+**Red is the least reliable hue.** Do not pair red with green, black, dark grey, or brown to mark contrasting components. Red-green is the most common deficiency. Red against a dark neutral fails separately, under protan-type deficiency, where red's perceived brightness collapses so red reads as dark rather than as a distinct hue. Blue against red is a safe pair. The guides use blue `#2563eb` for a working path and red `#dc2626` for a blocked one.
+
+**A marker can silently inherit the wrong color.** Mermaid mints per-color arrow markers keyed by hex (`crossEnd__dc2626`, `pointEnd__2563eb`) and derives that color from `linkStyle default`, ignoring an indexed `linkStyle`. So `linkStyle default stroke:<color>` recolors a blocked arrow's `x` terminator to the working-path color while leaving the line itself red — the shape that means "blocked" ends up wearing the color that means "works." Assign stroke **by index** whenever any arrow needs its own color. Then confirm in the rendered SVG that each `marker-end` points at the expected `__<hex>` variant:
+
+```bash
+mmdc -i diagram.mmd -o diagram.svg
+grep -o 'marker-end="[^"]*"' diagram.svg | sort | uniq -c
+```
+
+Verify color changes by rendering, never by reading the source. Related: the `reference-mermaid-cli-diagram-verification` memory.
 
 ## Bidirectional Cross-Links
 
