@@ -12,13 +12,14 @@ description: >
   GFM slug anchors, non-heading and image anchors, hyperlinking figure/diagram/table
   references, bidirectional cross-links, title-case headings, sibling-heading numbering,
   empty-section-preamble tolerance, list-vs-inline enumeration, color-blind-safe diagram
-  color and palette economy, and pretty-printing an embedded JSON string. Do NOT use this for auditing a
+  color and palette economy, forward-reference fragility, and pretty-printing an embedded
+  JSON string. Do NOT use this for auditing a
   finished doc (use tech-doc-consistency-check) or for general prose style (that stays in
   the user's global CLAUDE.md).
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.11.0"
+  version: "1.12.0"
 ---
 
 # Tech Doc Authoring
@@ -139,6 +140,14 @@ The trigger does **not** fire on a back-reference to something already enumerate
 Include a fact only if the target reader needs the concept at that point in the doc. The test is not "is it true" or "is it a real API" — it is "does *this reader* need this *here*." A fact can be accurate and still not belong: harness-internals and access-mechanism detail sit below the line of a reader who only writes application code, so they are cut even when correct. Name the reader for the passage (e.g. the `agent.py` author, the operator, the client developer), keep what that reader must know to use the thing, and drop what only its maintainer would.
 
 This is why a concept primer omits the plumbing that *implements* the concept. Example — a Session/State primer for an app developer: keep `session`, `state`, and what the framework deposits there; cut the classes that drive the runtime (`Runner`, the session-service implementation) and the several code surfaces that reach state (`ToolContext.state`, `callback_context.state`, `invocation_context.session.state`). The reader never writes them, so naming one implies a precision it lacks and naming all is sprawl. This is distinct from concision, which trims wordiness: this rule decides inclusion by *whose need*, and it can cut a whole true subtopic, not just words.
+
+## Forward-Reference Fragility
+
+Do not write a sentence in one part of a doc that hard-codes a fact about a *different* part of the doc — an item count ("Four facts follow:") or a description of what another section covers ("[§7.2.1] covers what the runtime cannot reach"). An edit to that other part later can silently make the sentence wrong, and nothing flags the break. Prefer a phrasing with no dependency on the other location's current state: a count-free lead-in ("Characteristics:" instead of "Four facts follow:"), or simply cutting a cross-section description that the reader can get by following the link instead.
+
+This is the general form of the item-count trap already named in **List vs. Inline Enumeration** above (a stale "The 3 behaviors listed above" after a 4th bullet was added elsewhere) — that trap is one instance of this rule, not a separate concern.
+
+(Set 2026-08-07, from a 2026-08-04 co-edit of the Infra Guide. The user rejected both "Four facts follow:" and "[§7.2.1] covers what the runtime cannot reach" on this reasoning, over my initial argument that both were more precise phrasings.)
 
 ## Mark Every Omission Inside a Code or Capture Block
 
