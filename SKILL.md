@@ -11,6 +11,8 @@ description: >
   image", "edit the doc". Covers hard-wrap rules, in-doc and cross-doc link construction,
   GFM slug anchors, non-heading and image anchors, hyperlinking figure/diagram/table
   references, bidirectional cross-links, title-case headings, sibling-heading numbering,
+  un-numbered named headings (`Sidebar N:`, `Figure N:`) nesting exactly one level below
+  their parent section,
   empty-section-preamble tolerance, list-vs-inline enumeration, color-blind-safe diagram
   color and palette economy, forward-reference fragility, and pretty-printing an embedded
   JSON string. Do NOT use this for auditing a
@@ -19,7 +21,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.12.0"
+  version: "1.13.0"
 ---
 
 # Tech Doc Authoring
@@ -109,7 +111,20 @@ Write all section headings in title case, not sentence case. Capitalize the firs
 
 ## Matching Sibling Heading Convention
 
-When adding a heading to an existing document, match the convention of a nearby **content** heading of the same level: its numbering scheme and depth, title vs. sentence case, and anchor style. If sibling content headings are numbered (e.g. `##### 6.3.6.1.`), number the new one to continue the sequence; if they are unnumbered, leave it unnumbered. Do not model a content heading on a special-case named callout. `Sidebar` headings (and similar named blocks such as `Note:` or `Example:` callouts) deliberately break the numbering convention and are exempt, so they are the wrong exemplar to copy. The trap to avoid: reaching for the nearest heading when that heading is a callout exception rather than a real content sibling.
+When adding a heading to an existing document, match the convention of a nearby **content** heading of the same level: its numbering scheme and depth, title vs. sentence case, and anchor style. If sibling content headings are numbered (e.g. `##### 6.3.6.1.`), number the new one to continue the sequence; if they are unnumbered, leave it unnumbered. Do not model a content heading on a special-case named callout. `Sidebar` headings (and similar named blocks such as `Note:` or `Example:` callouts) deliberately break the **numbering** convention and are exempt from it, so they are the wrong exemplar to copy. The trap to avoid: reaching for the nearest heading when that heading is a callout exception rather than a real content sibling. ⚠️ The numbering exemption does not extend to nesting — see the next rule.
+
+## Un-Numbered Named Headings Nest Exactly One Level Deeper
+
+An un-numbered named heading — `Sidebar N:`, `Figure N:`, `System Diagram N:`, `Note:`, `Example:`, and similar named callouts — takes a level **exactly one deeper than the content heading it belongs to**. Never two or more deeper, and never the same level or shallower. A sidebar under `### 1.1.` is `#### Sidebar 1: …`. A sidebar under `#### 6.3.1.` is `##### Sidebar 4: …`. The same sidebar sequence therefore lands at different depths in different parts of a doc, and that is correct — depth follows the parent, not the label.
+
+**The reason is rendering, not tidiness.** GitHub builds its rendered Table of Contents from heading levels. A skipped level inserts a phantom nesting step, so the entry indents one notch too far and reads as filed under a section that does not exist. The same skip degrades screen-reader outline navigation.
+
+Two consequences when you change a heading's level:
+
+- Re-indent its Table-of-Contents entry to match. Use the doc's own indent unit — the Infra Guide's TOC indents 4 spaces per level, the DevOps Guide's 2.
+- Nothing else needs touching. A level change does not alter the GFM slug, so every anchor and cross-reference to that heading keeps working.
+
+(Set 2026-08-10. The rule replaces an earlier convention that held all of a document's sidebars at one uniform depth, which is what produced the `### 1.1.` → `##### Sidebar 1:` skip in the Infra Guide.)
 
 ## Empty Section Preamble
 
