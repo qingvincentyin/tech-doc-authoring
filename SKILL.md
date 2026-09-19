@@ -13,7 +13,8 @@ description: >
   references, bidirectional cross-links, title-case headings, sibling-heading numbering,
   un-numbered named headings (`Sidebar N:`, `Figure N:`) nesting exactly one level below
   their parent section,
-  empty-section-preamble tolerance, list-vs-inline enumeration, color-blind-safe diagram
+  empty-section-preamble tolerance, list-vs-inline enumeration, no automatic bold lead-in on
+  bullets, color-blind-safe diagram
   color and palette economy, forward-reference fragility, and pretty-printing an embedded
   JSON string. Do NOT use this for auditing a
   finished doc (use tech-doc-consistency-check) or for general prose style (that stays in
@@ -21,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.13.0"
+  version: "1.14.0"
 ---
 
 # Tech Doc Authoring
@@ -149,6 +150,20 @@ Prefer a list over a paragraph that enumerates items inline — whether parallel
 The trigger does **not** fire on a back-reference to something already enumerated — "the two forms", "all four types", "the same 3 steps". A definite determiner before the number marks it as a pointer backward, not a promise forward.
 
 **Mixed-altitude passages — commit the structure, and use the list as a diagnostic.** A flat paragraph linearizes the logical tree of its sentences: some are parallel siblings, and one may be a summary that closes over several earlier ones. Flattening loses that shape, so adjacency implies false parentage — a sentence that concludes *several* earlier ones, left trailing after the last, reads as elaborating only that last one. When a passage mixes per-item detail with a cross-item conclusion, structure it up front: a list for the parallel items, then the conclusion as its own paragraph after the list (per the rule above). The list is also a diagnostic. If you cannot place every sentence as either a parallel leaf or the closing summary, the paragraph has a hidden scoping error.
+
+## No Automatic Bold Lead-In on Bullets
+
+Do not open a bullet with a bold lead-in phrase by default. Write `- The access token is signed, not encrypted. …`, not `- **The access token is signed, not encrypted.** …`. The same applies to a label-style bullet: write `- Arrow 8 (Flow B): …` in plain text.
+
+Bold is an emphasis signal, and it only works while it is rare. A bold lead-in on every bullet spreads bold across the whole doc, and the few words that truly need emphasis then drown among them. Use bold only where the words are a real emphasis the reader must not miss, such as a warning, a counter-intuitive fact, or the one term a passage turns on. The test is whether the reader would lose something if that bold were plain text. If not, leave it plain.
+
+Scope:
+
+- Apply this to new and edited bullets only. Do not sweep the existing bold lead-ins out of a doc unless the user asks.
+- When the user removes bold lead-ins, treat it as deliberate. Do not flag the result as inconsistent with neighboring sections that still carry them.
+- Leading with the key word still matters. Put the most important word first in plain text, per the global CLAUDE.md bullet rule.
+
+(Set 2026-09-18. The user stripped the bold lead-ins from 3 bullets in the Infra Guide's §10.4, and I flagged the change as a consistency break against §10.5.3. The user: *"It makes the whole doc littered with bold words which drowns the real important bold words."*)
 
 ## Write to the Reader's Altitude
 
