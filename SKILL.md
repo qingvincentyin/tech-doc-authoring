@@ -12,7 +12,7 @@ description: >
   GFM slug anchors, non-heading and image anchors, hyperlinking figure/diagram/table
   references, bidirectional cross-links, title-case headings, sibling-heading numbering,
   un-numbered named headings (`Sidebar N:`, `Figure N:`) nesting exactly one level below
-  their parent section,
+  their parent section, sidebar bodies written as a blockquote,
   empty-section-preamble tolerance, list-vs-inline enumeration, no automatic bold lead-in on
   bullets, color-blind-safe diagram
   color and palette economy, forward-reference fragility, and pretty-printing an embedded
@@ -22,12 +22,22 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.14.0"
+  version: "1.29.0"
 ---
 
 # Tech Doc Authoring
 
 Apply these rules while writing or editing Markdown technical documentation. They are authoring-time rules — they shape what you produce. Auditing an already-written doc is a separate skill (`tech-doc-consistency-check`); general prose style (short sentences, active voice, plain words) stays in the user's global CLAUDE.md.
+
+## Rewriting Is Authoring — Re-Ask the Shape
+
+Every rule below applies as fully to a rewrite as to a first draft. This needs saying because it is where the rules go quiet. When the task is *fix this sentence*, *make this complete*, *tighten this*, the existing text hands you a form, and improving it inside that form feels like the whole job. It is not. Expanding prose into better prose is still a choice of structure, made by default instead of on purpose.
+
+Before editing any passage longer than a sentence, re-ask the structural question as if the passage did not exist: **what shape does this content want?** Sequential steps want a numbered list. Parallel items want bullets. A comparison wants a table. Narrative cause-and-effect wants prose. Inheriting the shape of what you are replacing is not an answer.
+
+The cue is the task verb. *Rewrite*, *expand*, *complete*, *clarify* all read as sentence-level instructions and all can require a structural change to satisfy.
+
+(Set 2026-09-20. In one Infra Guide co-edit session Claude missed 2 rules in a row this way. Asked to complete a paragraph about the pre-token Lambda, Claude expanded it into 5 sentences of sequential prose — Cognito invokes → Lambda returns → Cognito mints — with **List vs. Inline Enumeration** loaded and explicitly naming that construction. The user restructured it into 3 bullets and asked: *"Why didn't you do that? You have an authoring rule that says to prefer bullets than a sequential prose."*)
 
 ## Hard Line Breaks
 
@@ -127,6 +137,14 @@ Two consequences when you change a heading's level:
 
 (Set 2026-08-10. The rule replaces an earlier convention that held all of a document's sidebars at one uniform depth, which is what produced the `### 1.1.` → `##### Sidebar 1:` skip in the Infra Guide.)
 
+## Sidebar Body Is a Blockquote
+
+Write every line of a `Sidebar N:` body as a blockquote, from the line after the heading up to the next heading. Prefix each content line with `> `, put a bare `>` on each blank line between blocks, and indent a nested bullet as `>   - `. A fenced code block inside a sidebar is quoted line by line too (`> ```python`). The heading itself stays outside the quote.
+
+The blockquote is what sets a sidebar apart from the body text around it when the doc renders. A sidebar written as plain paragraphs reads as part of the section it interrupts. When you add a sidebar, copy the shape of an existing one in the same doc.
+
+(Set 2026-10-05. Claude wrote Infra Guide Sidebar 14 as plain text. The user: *"The content of a sidebar should be blockquoted."* A scan then found Sidebars 15 and 16 unquoted too.)
+
 ## Empty Section Preamble
 
 An "empty section preamble" is fine. A section heading may be immediately followed by a subheading with no text between them (e.g. an `##` heading directly followed by its first `###`). Do not flag this as an issue, and do not insert filler text just to fill the gap. Add a lead-in paragraph only when it carries real orienting content.
@@ -147,6 +165,8 @@ Prefer a list over a paragraph that enumerates items inline — whether parallel
 
 **Trigger — announcing a count commits you to a list.** The moment you write a cardinal followed by a countable noun ("Two things differ", "3 reasons", "four main differences", "two ways", "several caveats"), you have promised the reader an enumeration. Deliver it as a Markdown list or a table, never as the following prose sentence. This is the single most-missed case of the rule above, because the inline form reads fine one sentence at a time — "Two things differ. The path carries an extra segment, and the URL uses a number." — and only the promise makes it wrong. Treat the count word itself as the cue: on writing it, stop and set up a `:` lead-in with bullets.
 
+**A second trigger shape: the presence/absence pair.** Two clauses of the form "with X, A happens" and "without X, B happens" are parallel comparative items, so they want 2 bullets under a lead sentence naming X. The inline form hides it, because each clause reads as ordinary cause-and-effect prose on its own. (Set 2026-09-21, Infra Guide §10.11.2. Claude wrote *"The header's value is the routing key: each session id gets its own microVM. A request without the header gets a new session, and therefore a new microVM."* as one paragraph, with this rule loaded. The user split it into a lead sentence plus those 2 bullets. ⭐ Note the lead sentence ends in a period, ⛔ not the `:` this rule's main form calls for — correct here, because the bullets are consequences of the lead, not a set the lead promises.)
+
 The trigger does **not** fire on a back-reference to something already enumerated — "the two forms", "all four types", "the same 3 steps". A definite determiner before the number marks it as a pointer backward, not a promise forward.
 
 **Mixed-altitude passages — commit the structure, and use the list as a diagnostic.** A flat paragraph linearizes the logical tree of its sentences: some are parallel siblings, and one may be a summary that closes over several earlier ones. Flattening loses that shape, so adjacency implies false parentage — a sentence that concludes *several* earlier ones, left trailing after the last, reads as elaborating only that last one. When a passage mixes per-item detail with a cross-item conclusion, structure it up front: a list for the parallel items, then the conclusion as its own paragraph after the list (per the rule above). The list is also a diagnostic. If you cannot place every sentence as either a parallel leaf or the closing summary, the paragraph has a hidden scoping error.
@@ -157,13 +177,65 @@ Do not open a bullet with a bold lead-in phrase by default. Write `- The access 
 
 Bold is an emphasis signal, and it only works while it is rare. A bold lead-in on every bullet spreads bold across the whole doc, and the few words that truly need emphasis then drown among them. Use bold only where the words are a real emphasis the reader must not miss, such as a warning, a counter-intuitive fact, or the one term a passage turns on. The test is whether the reader would lose something if that bold were plain text. If not, leave it plain.
 
+**A contrast pair is a legitimate use.** When 2 bullets exist to set 2 named things against each other, bold the keyword each bullet turns on — `- **Pre sign-up** Lambda can be used as an AWS-side control.` against `- **Pre-token-generation** trigger cannot deny.` The bold there is not decoration on a lead-in. It is the contrast itself, and it passes the test above, because plain text would make the reader hunt for which 2 things are being compared.
+
 Scope:
 
 - Apply this to new and edited bullets only. Do not sweep the existing bold lead-ins out of a doc unless the user asks.
 - When the user removes bold lead-ins, treat it as deliberate. Do not flag the result as inconsistent with neighboring sections that still carry them.
+- When the user *adds* bold, treat that as deliberate too. ⛔ Do not flag it as drift, and do not flag it as reversing an unbolding sweep they asked for earlier in the same range. Ask what the bold is doing before assuming it is a lead-in.
+- ⛔ **Do not raise bold density in the user's text at all.** Not as a flag, not as a suggestion, not as a take-it-or-leave-it aside. This rule binds your own authoring, and the user's bold is theirs to judge.
 - Leading with the key word still matters. Put the most important word first in plain text, per the global CLAUDE.md bullet rule.
 
 (Set 2026-09-18. The user stripped the bold lead-ins from 3 bullets in the Infra Guide's §10.4, and I flagged the change as a consistency break against §10.5.3. The user: *"It makes the whole doc littered with bold words which drowns the real important bold words."*)
+
+(Do-not-raise-density bullet set 2026-09-20, minutes after the contrast-pair one. Claude suggested thinning the user's 5 `**service**`/`**people**` marks in Q4, having written 122 of the doc's own bold bullet lead-ins. The user: *"you're accusing me of a crime which you yourself are more guilty of."* ⭐ The asymmetry is the point: the user's bold carries meaning, Claude's default bold is decoration.)
+
+### Sweeping an Existing Range
+
+When the user *does* ask you to sweep a range, do not strip every bold lead-in in it. **Judge one list at a time, not one bullet at a time.** The same bold shape earns opposite verdicts in 2 different lists, and the surrounding list is what settles it.
+
+The test, in the user's own words: *"If the leading sentence only has several selected key words bolded, then that's deliberate, and you should keep them that way. If the entire leading sentence is bold, and such bold pattern is uniform across all bullets in that same list, then obviously this is a good candidate and you should unbold them."*
+
+Unbold when the bold span is a complete sentence whose only job is to lead the bullet, and the list around it uses that same shape. Keep when the bold is a term the sentence then continues from:
+
+- Field or property labels — `**Token URI**:`, `**App (engine):**`, `**Case A:**`, `**Phase A:**`, `**Q:**` / `**A:**`, `**Note:**`.
+- Definition lists, where each bullet names and then defines a thing.
+- Contrast pairs where only the keyword is bold (per the rule above).
+- Actor names carrying the sentence's subject — `- **Cognito**, acting as the OAuth Client, consumes …`.
+- Anchored labels that are also `<a id>` link targets, since inbound links render the label in bold too.
+
+A lone short label sitting among full-sentence bullets goes with its list, not with its shape. It is playing the lead-in role there, so unbold it.
+
+**Show the user the ones you cannot call, rather than guessing.** The recurring hard case is a label plus a bolded gloss — `- **X-Axis: What the child is (its class).** Which BaseAgent subclass …`. **The user's resolution, 3 times out of 3, was to shrink the bold to the term and let the gloss go plain:** `**X-Axis:**` / `**Y-Axis:**`, and `**Authentication** — signing in to …` / `**Authorization** — granting …`. Offer that middle option explicitly; do not present it as a binary between keep and unbold.
+
+Sweep blockquote bullets (`> - **…**`) on the same rule. A top-level-only scan undercounts — in the Infra Guide it missed 25 of 162.
+
+(Set 2026-09-21. The user authorized the last unswept range of the Infra Guide, §1–§10.8.1, with *"Don't blindly unbold everything … Use your judgement. For the ones that you cannot easily judge, show me and let me decide."* 87 came out, 77 stayed. ⭐ The clearest illustration of the list-is-the-unit rule: `**Cloud NAT.**` was kept because its list is a 3-term glossary, while `**Telemetry.**` was unbolded because its list is 4 full-sentence observations. ⭐ Unbolding a warning improved it — the bullet's surviving mid-sentence `**proxy VM's own**` is the counter-intuitive fact the note exists for, and the bold lead-in had been out-competing it by position.)
+
+(Contrast-pair case and the added-bold scope bullet set 2026-09-20, during the `#135` Infra co-edit of §10.10. The user bolded `**Pre sign-up**` and `**Pre-token-generation**` on a bullet pair, inside the very range they had asked me to unbold hours earlier, and I flagged it as possible drift. The user: *"They are the keywords that contrast each other between the 2 bullets, and that's the purpose of those 2 bullets."*)
+
+## Show a Repeated Action as Pseudocode
+
+When an action repeats over a set, such as one grant per entity data store of each connector, show the loop as pseudocode in a `text` fence. Do not describe it in prose. A developer reads `for each … :` with a nested body at a glance. A prose version ("run the commands once per data store, and for a federated connector once for every …") hides the loop's shape and its count. A singular noun in prose ("the grant on a data store") can also read as a single action when the real action repeats.
+
+- Fence: Use `text`, not a shell language, so no reader pastes it as runnable code.
+- Body: Name each iteration's action in plain words, then say in a sentence after the block which real commands run each one.
+- Precision: Keep the exact set in the loop header, such as "that the app attaches", not a looser set.
+
+(Set 2026-10-07, Infra Guide §11.5.6. Claude's sentence "Grant it … with `RESOURCE` set to the data store" read as 1 call per connector. Its prose rewrite was still "not intuitive for a software developer", and the user asked for pseudocode.)
+
+## Match a Copied Sample to the Doc's Spelling
+
+When you copy a command or request body from a vendor page into a doc or script, rewrite its identifiers into the spelling the doc already uses. An API often accepts 2 spellings of a field, such as protobuf snake_case and JSON camelCase. A vendor sample may use the one your doc does not. A copied sample that still works will not flag the mismatch, so check it by eye. Test a converted call before you publish it.
+
+(Set 2026-10-07, Infra Guide §11.5.2. Claude copied Google's snake_case `data_store_access_control_enabled` PATCH into a run sheet, the guide and `grant-connector-access.sh`, while every other mention used camelCase `dataStoreAccessControlEnabled`. The user asked why Claude had introduced the inconsistency.)
+
+## A Linked Script Carries Its Own Usage
+
+When a doc links to a script file instead of showing it, the doc carries only the link. Everything that explains the script goes in its header comment: what it does, how it maps to the doc's procedure, its behavior (e.g. read-modify-write), what it leaves in place, what it requires, which variables to set, which lines to edit, re-run safety, and options for partial runs. In the doc, a short list of links is enough, such as `- Grant: [link]` and `- Revoke: [link]`. Do not give each script its own subsection.
+
+(Set 2026-10-06, Infra Guide §11.6.1. The user: *"you tried to explain how to run the script. Don't do that. Move any such explanations to the comment in the script files instead."* A follow-up the same day moved the remaining "what the script does" sentences too, and collapsed §11.6.1/§11.6.2 into a 2-bullet link list.)
 
 ## Write to the Reader's Altitude
 
@@ -171,13 +243,92 @@ Include a fact only if the target reader needs the concept at that point in the 
 
 This is why a concept primer omits the plumbing that *implements* the concept. Example — a Session/State primer for an app developer: keep `session`, `state`, and what the framework deposits there; cut the classes that drive the runtime (`Runner`, the session-service implementation) and the several code surfaces that reach state (`ToolContext.state`, `callback_context.state`, `invocation_context.session.state`). The reader never writes them, so naming one implies a precision it lacks and naming all is sprawl. This is distinct from concision, which trims wordiness: this rule decides inclusion by *whose need*, and it can cut a whole true subtopic, not just words.
 
+## Goal and Solution Before Reference Material
+
+Order a chapter so the reader reaches its payoff while their attention is fresh. Put the goal first, then the solution, then the runnable automation of the solution. Put heavy reference material after them: a terminology primer, a knob-by-knob explanation, raw per-setting reads. A reader who only wants the answer can then stop early. Link the solution's steps forward to the reference sections, and link the first use of each primer term to its definition.
+
+A heavy primer placed first wears the reader out before the question is even stated. If a primer must come before something, open it with 1 line saying why it is worth the effort.
+
+Keep a section as a numbered subsection, not a sidebar, when a solution step depends on it, or when it holds a table, a diagram, or mechanism. A sidebar holds a short conclusion or caveat.
+
+(Set 2026-10-07, when the user reordered Infra Guide §11 to Goal → Solution → Automate → Primer → Knobs, arguing that a reader's attention is spent by the time they reach a solution placed after the long explanations.)
+
+## Give a Heading Only to What Earns One
+
+A heading puts an item in the Table of Contents and gives it a number. Give one only to an item a reader would look for or link to on its own.
+
+- Section body: Do not leave a section's main content as a lead-in above a lone subsection. Move it into its own numbered subsection, so the section has 2 or more siblings.
+- Diagram: A diagram that serves only the paragraphs around it gets no numbered heading. Put its caption inside the diagram, with a Mermaid `title:` frontmatter line.
+- Callout: A caveat that serves 1 paragraph is a `**Note:**` with an `<a id>` anchor, not a sidebar.
+- Sidebar: A sidebar that qualifies the section it sits in, at that section's end, is body text. Rewrite it as the section's closing paragraphs, or move it next to the rule it explains, and lead with its conclusion.
+- Pair: 2 diagrams that show the same thing from 2 perspectives take the same label kind, such as System Diagram 16 and 17, not a System Diagram and a Figure.
+
+Renumber the remaining items of each kind in document order after such a change, and retarget every inbound link.
+
+(Set 2026-10-07, Infra Guide §11. The user flattened §11.2's lone §11.2.1, de-headed a 1-paragraph diagram, turned a sidebar into a Note, turned 2 sidebars into body text, and relabelled Figure 4 as System Diagram 17.)
+
+## Name a Mechanism, Not One of Its Effects
+
+Name a mechanism by what it is, not by one of the things it does. A name taken from 1 effect makes readers think that effect is the whole mechanism. Pair a generic noun such as "check", "filter", or "gate" with the thing that makes it specific, such as "`.get` IAM check".
+
+(Set 2026-10-07. Infra Guide §11 called the `dataStoreAccessControlEnabled` IAM check "the filter", and the user read it as picker-list filtering, although it also withholds answer content. The user then rejected bare "check" as just as vague.)
+
+## No Item Count in a List Lead-In
+
+Do not put a count in the sentence that introduces a list, even when the list sits directly below it. Write `Notes:`, `Characteristics:`, `These settings must line up:` — never `3 settings must line up:` or `Four facts follow:`. The same ban covers a sentence after a list that counts back into it (`All 3 must hold`, `The 2 routes above`).
+
+A count is a second place the list's length is recorded, and only one of the two gets updated when a bullet is added or removed. The count is then silently wrong, and nothing flags it. The lead-in earns nothing by carrying it, because the reader can see how many bullets there are.
+
+Keeping the framing is a separate matter, and usually the real objection to a weak lead-in. `Notes:` does not tell the reader the bullets are prerequisites; `These settings must line up:` does, without a number. Fix framing by naming what the items *are*, never by counting them.
+
+(Split out 2026-09-20 from **Forward-Reference Fragility** below, which had named the count trap only as an example of a sentence describing a *different* part of the doc. That framing did not fire for a lead-in sitting directly above its own list — the commonest case — and Claude argued to restore `3 settings must line up:` in an Infra Guide co-edit. The user: *"in the future, if we add/subtract a bullet, we'd have to change the stated count, too."*)
+
 ## Forward-Reference Fragility
 
 Do not write a sentence in one part of a doc that hard-codes a fact about a *different* part of the doc — an item count ("Four facts follow:") or a description of what another section covers ("[§7.2.1] covers what the runtime cannot reach"). An edit to that other part later can silently make the sentence wrong, and nothing flags the break. Prefer a phrasing with no dependency on the other location's current state: a count-free lead-in ("Characteristics:" instead of "Four facts follow:"), or simply cutting a cross-section description that the reader can get by following the link instead.
 
-This is the general form of the item-count trap already named in **List vs. Inline Enumeration** above (a stale "The 3 behaviors listed above" after a 4th bullet was added elsewhere) — that trap is one instance of this rule, not a separate concern.
+This is the general form of the item-count trap already named in **List vs. Inline Enumeration** above (a stale "The 3 behaviors listed above" after a 4th bullet was added elsewhere) — that trap is one instance of this rule, not a separate concern. The same trap inside a single list's own lead-in has its own rule above, **No Item Count in a List Lead-In**.
 
 (Set 2026-08-07, from a 2026-08-04 co-edit of the Infra Guide. The user rejected both "Four facts follow:" and "[§7.2.1] covers what the runtime cannot reach" on this reasoning, over my initial argument that both were more precise phrasings.)
+
+## Text Trees: Hang a Child Near the End of Its Parent's Label
+
+In a box-drawing text tree (`├──`, `└──`, `│`), column position is the only signal of nesting. Place each child's `│` or field block so it starts near the end of its parent's label. A child that starts at or before the start of its parent's label reads as the parent's sibling, even when it is a property of the parent. Judge the layout by where each child sits relative to its own parent's label. Equal column offsets across different parents do not matter, so do not flag unequal offsets as an inconsistency.
+
+(Set 2026-10-05, from Infra Guide Figure 4. I pulled the `engines/…` field block left to the start of the node's name to save width, and the user pointed out that `appType` then read as a sibling of the engine. I then flagged a "14 columns vs 7 columns" offset difference, and the user said the absolute count does not matter.)
+
+The same holds for any other layout choice inside a text figure, such as where a closing bracket goes or which value column a key is padded to. The user chooses each one for how it reads at that spot, not for uniformity across the figure. Do not flag 2 styles in 1 figure as an inconsistency, and do not offer to unify them. Flag a layout only when it misstates the structure: wrong nesting depth, a stray `│`, or a missing separator.
+
+(Added 2026-10-05, after I flagged Figure 4's mix of inline closers like `}],` and own-line closers like `],` as "2 styles". The user: each style "is designed for better visual presentation at the right place".)
+
+## Explain Code in Comments, Not in Prose Around the Block
+
+When a doc shows a code block, put the explanation of what the code does inside the block as comments, next to the lines it explains. Do not write it as prose before or after the fence. This covers how the code works (read-modify-write), how to call an API (GET, not POST), what a value must look like, and what error appears when a step is skipped. A reader who copies the block takes the explanation along, and each comment sits next to the line it is about.
+
+Keep prose outside the block only for what is not about the code itself, such as when to run it or why the doc needs it at that point. A section may then open directly on the code block.
+
+This is the inline counterpart to **A Linked Script Carries Its Own Usage**.
+
+(Set 2026-10-08, Infra Guide §11.5.2. The user had Claude delete 2 prose paragraphs before the grant commands, one about `RESOURCE` and one about `getIamPolicy`/`setIamPolicy` and the etag. Their content moved into the block as comments.)
+
+## Set Off a Code Comment and Its Lines With Blank Lines
+
+When you add a comment inside a code block that explains specific lines, put a blank line before the comment and a blank line after the last line it covers. The blank lines make the comment and its lines one visible group. Without them, the reader cannot tell where the comment's scope ends, and it can read as a comment on the whole block or on the lines around it.
+
+```bash
+ROLE=roles/discoveryengine.agentspaceUser
+
+# Sample values of RESOURCE, by resource type:
+#   App:                  collections/default_collection/engines/my-app_1788743341079
+#   Plain data store:     collections/default_collection/dataStores/my-datastore_1791248846914
+RESOURCE=<RESOURCE>
+
+URL=https://…/${RESOURCE}
+```
+
+Skip a blank line where the group already sits at the start or end of the block, or next to an existing blank line. This rule covers comments you add. Do not sweep existing comments in a doc unless the user asks.
+
+(Set 2026-10-08, Infra Guide §11.5.2. Claude added a sample-values comment above `RESOURCE=` with no blank lines around the group. The user asked for them so the reader sees which line the comment is for.)
 
 ## Mark Every Omission Inside a Code or Capture Block
 
@@ -187,11 +338,19 @@ Put the marker where the removed content was, at the indentation of its neighbor
 
 Redaction is a separate act from omission and gets its own marker, so do not collapse the two. Replacing a secret's value keeps the field visible and only hides what it held (`Bearer ya29.******<REDACTED, the parent runtime SA>******`), whereas `...` says a field or line is missing entirely. Match whatever redaction idiom the doc already uses, and preserve any non-secret prefix that carries meaning — a `ya29.` left in front of a redacted token still tells the reader what kind of credential it is.
 
-## Fencing a Mixed Command-Plus-Output Block
+## Fencing a Block Whose Bulk Is JSON
 
-When one code block shows a shell command followed by its JSON output, fence it as ```` ```json ```` — not ```` ```console ````, ```` ```shell ````, or ```` ```text ````. The JSON is the bulk of the block and the part the reader studies, so pretty-printing it is what matters. A `console`/`shell`/`text` fence renders the JSON flat and unhighlighted, which loses far more than it gains. The cost is that the 2 or 3 leading `$ curl …` lines highlight oddly, and that cost is accepted deliberately.
+When JSON is the bulk of a code block, fence it as ```` ```json ```` — even when the block also holds lines that are not JSON. Pretty-printing and highlighting the part the reader studies is what matters. A `console`/`shell`/`text` fence renders the JSON flat and unhighlighted, which loses far more than it gains. The cost is that the few non-JSON lines highlight oddly, and that cost is accepted deliberately.
 
-Never "correct" such a fence to a shell language, and never report the language as a mismatch — it is an intentional choice about which half of the block gets good rendering.
+The rule is about proportion, not about the block being valid JSON. Apply it whatever the non-JSON lines are:
+
+- A shell command followed by its JSON output — the 2 or 3 leading `$ curl …` lines.
+- A server-sent-events line, where a `data: ` prefix sits in front of a pretty-printed JSON event. (Set 2026-09-20, Infra Guide §3.2.1. The user: *"I fenced it with 'json' rather than 'text' in order to render it better."*)
+- Any comparable prefix, label, or framing line that introduces the JSON.
+
+Never "correct" such a fence to `text` or to a shell language, and never report the language as a mismatch — it is an intentional choice about which part of the block gets good rendering. ⛔ Do not argue for `text` on the grounds that the block will not parse as JSON, and do not argue for it on the grounds that sibling blocks elsewhere in the doc use `text`. A sibling block that is a single unformatted line has nothing to gain from a `json` fence, so the two choices are consistent, not contradictory.
+
+The user may also split a long URL value inside such a block across lines at its query parameters (`…/authorize?` then one `name=value&` per line), for readability. That is a deliberate presentation choice. Do not flag it as invalid JSON or as a copy-paste hazard, and do not propose rejoining it. (Set 2026-09-19, Infra Guide §10.5.2 `authorizationUri`.)
 
 ## Pretty-Printing an Embedded JSON String
 
