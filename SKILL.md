@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.31.0"
+  version: "1.31.1"
 ---
 
 # Tech Doc Authoring
@@ -129,15 +129,20 @@ A parent section's heading may name the concepts its subsections cover, or it ma
 
 ⛔ Do not flag an enumerating heading for instability alone. Ask first whether its concepts are obscure. (Set 2026-10-17, in the `#119` Infra Guide co-edit. Claude listed §6.1 and §11.4 as having the same problem as the old §12.2. The user explained the difference.)
 
-## A Subsection Heading Names Its Subject
+## A Quotable Subsection Heading Names Its Subject
 
-Name the subject in a subsection heading, even when the parent heading already names it. Write `12.2.1. Model Armor Template: Filters, Enforcement`, not `12.2.1. Template: Filters, Enforcement`. A heading is often read without its parent: in a link from another chapter, a quote in another doc, a search hit, or a browser tab title. Out of context, "Template" has no owner, and a chapter that involves several products leaves the reader guessing.
+Decide case by case whether a subsection heading names its subject. The test is whether the section is likely to be quoted on its own, without its parent: in a link from another chapter, a quote in another doc, a search hit, or a browser tab title.
+
+- Likely quoted alone: Name the subject. A self-contained section that explains a concept is the typical case, such as a primer's subsection. Write `12.2.1. Model Armor Template: Filters, Enforcement`, not `12.2.1. Template: Filters, Enforcement`. Out of context, "Template" has no owner, and a chapter that involves several products leaves the reader guessing.
+- Unlikely quoted alone: Leave the heading short. A procedural step that only makes sense inside its walkthrough is the typical case, such as `11.3.2.3. Set the Shell Variables`.
+
+The balance matters. Adding the subject everywhere makes the TOC dense, and the repeated words drown out the keywords that are supposed to catch the reader's eye.
 
 - Placement: Put the subject where it reads naturally. A trailing phrase is fine (`4 Places to Screen With Model Armor`).
 - Already named: Leave a heading alone when it already names the subject (`Identity That Calls Model Armor`).
 - Scope: Apply this to new and edited headings. Do not sweep existing chapters unless the user asks. A rename changes the GFM slug, so retarget every inbound link in the same edit.
 
-(Set 2026-10-17, in the `#119` Infra Guide co-edit. The user renamed §12.2.1–§12.2.3 to add "Model Armor".)
+(Set 2026-10-17, in the `#119` Infra Guide co-edit. The user renamed §12.2.1–§12.2.3 to add "Model Armor", then limited the rule to sections likely to be quoted on their own.)
 
 ## Matching Sibling Heading Convention
 
