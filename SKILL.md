@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.29.0"
+  version: "1.30.0"
 ---
 
 # Tech Doc Authoring
@@ -119,6 +119,15 @@ Prefer bi-directional cross-links. When one passage points to another (body→si
 ## Title-Case Headings
 
 Write all section headings in title case, not sentence case. Capitalize the first and last word, and every major word in between. Lowercase only the minor words: articles (`a`, `an`, `the`), coordinating conjunctions (`and`, `but`, `or`, `nor`, `for`, `yet`, `so`), and prepositions regardless of length (`of`, `on`, `in`, `to`, `by`, `with`, `from`, `for`, `vs.`, etc.). Capitalize the first word after a colon. Capitalize both parts of a hyphenated compound (e.g. `Per-User`, `Three-Stage`, `High-Code`). Keep code-span/backtick terms (e.g. `` `curl` ``, `` `agents-cli run` ``) and proper nouns verbatim. Capitalization does not change GFM slugs, so converting case never breaks TOC anchors or in-doc cross-reference hyperlinks.
+
+## A Parent Heading Lists Its Contents Only When They Are Obscure
+
+A parent section's heading may name the concepts its subsections cover, or it may name only the topic (`12.2. Primer: Model Armor`). Choose by how familiar the concepts are to the reader.
+
+- **Obscure or confusing concepts:** Name them in the heading. The names catch a reader who has been tripped up by exactly those concepts, and that payoff outweighs the cost of renaming the heading when a subsection is added. Example: `6.1. Primer: Session, State, and Memory`, `11.4. Primer: Topology of App, Collection, Connector, Data Store`.
+- **Familiar concepts:** Name only the topic. A list of familiar terms is unstable, because every new subsection forces a rename. It also tells the reader "you know all this", which discourages them from reading content they need. Example: `12.2. Primer: Template, Endpoint, Screening Point, Calling Identity` became `12.2. Primer: Model Armor`.
+
+⛔ Do not flag an enumerating heading for instability alone. Ask first whether its concepts are obscure. (Set 2026-10-17, in the `#119` Infra Guide co-edit. Claude listed §6.1 and §11.4 as having the same problem as the old §12.2. The user explained the difference.)
 
 ## Matching Sibling Heading Convention
 
