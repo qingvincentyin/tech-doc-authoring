@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.30.0"
+  version: "1.31.0"
 ---
 
 # Tech Doc Authoring
@@ -128,6 +128,16 @@ A parent section's heading may name the concepts its subsections cover, or it ma
 - **Familiar concepts:** Name only the topic. A list of familiar terms is unstable, because every new subsection forces a rename. It also tells the reader "you know all this", which discourages them from reading content they need. Example: `12.2. Primer: Template, Endpoint, Screening Point, Calling Identity` became `12.2. Primer: Model Armor`.
 
 ⛔ Do not flag an enumerating heading for instability alone. Ask first whether its concepts are obscure. (Set 2026-10-17, in the `#119` Infra Guide co-edit. Claude listed §6.1 and §11.4 as having the same problem as the old §12.2. The user explained the difference.)
+
+## A Subsection Heading Names Its Subject
+
+Name the subject in a subsection heading, even when the parent heading already names it. Write `12.2.1. Model Armor Template: Filters, Enforcement`, not `12.2.1. Template: Filters, Enforcement`. A heading is often read without its parent: in a link from another chapter, a quote in another doc, a search hit, or a browser tab title. Out of context, "Template" has no owner, and a chapter that involves several products leaves the reader guessing.
+
+- Placement: Put the subject where it reads naturally. A trailing phrase is fine (`4 Places to Screen With Model Armor`).
+- Already named: Leave a heading alone when it already names the subject (`Identity That Calls Model Armor`).
+- Scope: Apply this to new and edited headings. Do not sweep existing chapters unless the user asks. A rename changes the GFM slug, so retarget every inbound link in the same edit.
+
+(Set 2026-10-17, in the `#119` Infra Guide co-edit. The user renamed §12.2.1–§12.2.3 to add "Model Armor".)
 
 ## Matching Sibling Heading Convention
 
