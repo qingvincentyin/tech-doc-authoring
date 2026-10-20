@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.31.1"
+  version: "1.32.1"
 ---
 
 # Tech Doc Authoring
@@ -172,6 +172,10 @@ The blockquote is what sets a sidebar apart from the body text around it when th
 ## Empty Section Preamble
 
 An "empty section preamble" is fine. A section heading may be immediately followed by a subheading with no text between them (e.g. an `##` heading directly followed by its first `###`). Do not flag this as an issue, and do not insert filler text just to fill the gap. Add a lead-in paragraph only when it carries real orienting content.
+
+## Nested Parentheses Are Fine
+
+A parenthetical may contain a parenthesized link, such as `(whose tokens are certificate-bound ([§12.2.2](…)))`. ⛔ Do not flag the stacked closing parentheses, and do not propose rewriting to avoid them. (Set 2026-10-19, Infra Guide §12.2.4. The user: *"don't worry about the nested parentheses"*.)
 
 ## Cold Open
 
@@ -334,6 +338,10 @@ Keep prose outside the block only for what is not about the code itself, such as
 This is the inline counterpart to **A Linked Script Carries Its Own Usage**.
 
 (Set 2026-10-08, Infra Guide §11.5.2. The user had Claude delete 2 prose paragraphs before the grant commands, one about `RESOURCE` and one about `getIamPolicy`/`setIamPolicy` and the etag. Their content moved into the block as comments.)
+
+**Moving prose into a comment is not a reason to keep it.** Before you move a sentence into the block, ask whether the code already says it. A comment that restates what the code's structure shows, such as a scope implied by the call it sits in, is noise. So is a framework internal the reader never acts on, such as how ADK forwards a config field. Drop such a sentence instead of moving it. Keep a comment only for what the code can't show: a constraint, a trap, a non-obvious value.
+
+(Set 2026-10-19, Infra Guide §12.4.1. Claude moved "ADK copies that config into every model request" from a lead-in into a comment on `generate_content_config=`. The user: the snippet sits inside `root_agent = LlmAgent(...)`, so the comment explained "what is already obvious in the Python code". It was deleted.)
 
 ## Set Off a Code Comment and Its Lines With Blank Lines
 
