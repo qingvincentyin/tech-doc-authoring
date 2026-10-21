@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.32.1"
+  version: "1.33.0"
 ---
 
 # Tech Doc Authoring
@@ -328,6 +328,12 @@ In a box-drawing text tree (`├──`, `└──`, `│`), column position is
 The same holds for any other layout choice inside a text figure, such as where a closing bracket goes or which value column a key is padded to. The user chooses each one for how it reads at that spot, not for uniformity across the figure. Do not flag 2 styles in 1 figure as an inconsistency, and do not offer to unify them. Flag a layout only when it misstates the structure: wrong nesting depth, a stray `│`, or a missing separator.
 
 (Added 2026-10-05, after I flagged Figure 4's mix of inline closers like `}],` and own-line closers like `],` as "2 styles". The user: each style "is designed for better visual presentation at the right place".)
+
+## Side-by-Side Code: Blank Lines Align the Compared Lines
+
+When 2 code blocks sit side by side for comparison, such as the cells of a 2-column table, the user may give them different blank lines so the lines being compared sit on the same row. ⛔ Do not flag the uneven blank lines, and do not suggest making the 2 blocks match line for line. When you write such a pair yourself, pad with blank lines so the compared lines align.
+
+(Set 2026-10-20, Infra Guide Sidebar 17. Claude suggested a blank line in column 2 to match column 1. The user had left it out on purpose, to line up `prompt_template_name` and `response_template_name` across the 2 cells.)
 
 ## Explain Code in Comments, Not in Prose Around the Block
 
