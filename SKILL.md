@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.33.0"
+  version: "1.34.0"
 ---
 
 # Tech Doc Authoring
@@ -334,6 +334,20 @@ The same holds for any other layout choice inside a text figure, such as where a
 When 2 code blocks sit side by side for comparison, such as the cells of a 2-column table, the user may give them different blank lines so the lines being compared sit on the same row. ⛔ Do not flag the uneven blank lines, and do not suggest making the 2 blocks match line for line. When you write such a pair yourself, pad with blank lines so the compared lines align.
 
 (Set 2026-10-20, Infra Guide Sidebar 17. Claude suggested a blank line in column 2 to match column 1. The user had left it out on purpose, to line up `prompt_template_name` and `response_template_name` across the 2 cells.)
+
+## Sample Output: Readability Beats Byte Accuracy
+
+In a captured output block, you may pad columns with spaces so they line up, even though the real command emits tabs or ragged spacing. Do this when a variable-width column sits before other columns, such as `jq … | @tsv` with an email before a UUID. Only that case misaligns. Columns of fixed-width values, such as UUIDs, already line up at any tab width. ⛔ Do not flag the padding as inexact output, and do not suggest `column -t` in the doc instead. The user tried that comment and reverted it as adding "more confusion than solution".
+
+(Set 2026-10-22, `Build Gemini Enterprise with WIF, SCIM, Connectors.md` §3.6.4. The user hand-aligned the rows and asked Claude to do the same elsewhere.)
+
+## Name a Sample Variable for What the Reader Types
+
+Name a shell variable in a doc sample for the value the reader will actually supply, not for the API attribute it feeds. `USER_EMAIL` beats `SCIM_USER_NAME`, even though the filter matches SCIM `userName`. A reader composing a real command knows what an email is. They cannot tell whether "user name" means the email, its local part, or the UPN. Put the precise mapping in a 1-line comment next to the `export`, naming the exact attributes, such as `# USER_EMAIL is matched against the SCIM userName, which Entra fills by default from userPrincipalName.`
+
+This does not override precision where a wrong value fails silently for most readers. `GROUP_BASENAME` was rejected because a group's display name is often unrelated to its email. Check the real data before choosing.
+
+(Set 2026-10-22, same doc §3.1. The user: `SCIM_USER_NAME` "is 0% readable", `USER_EMAIL` "is in effect 99% the case, and is 100% readable".)
 
 ## Explain Code in Comments, Not in Prose Around the Block
 
