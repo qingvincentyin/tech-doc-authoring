@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.34.0"
+  version: "1.35.0"
 ---
 
 # Tech Doc Authoring
@@ -111,6 +111,10 @@ In practice, prefer adding a node to an existing `classDef` over writing a one-o
 **Use one color for all subgraphs, at every nesting depth.** A nested region does not get its own fill. The nesting already shows containment and the subgraph title already names the region, so a second color spends a hue on what 2 channels carry. The inner box stays legible regardless, because its own stroke still draws the outline. Vary a subgraph only when it differs in *kind* rather than in position — a conceptual grouping versus a deployment boundary, say — and express that with `stroke-dasharray` rather than with another color.
 
 (Set 2026-08-04. I had recommended 6 edits to fix a shared green that no reader would have been confused by, and separately kept a unique color on a node whose importance the arrows already showed.)
+
+**Leave a cross-owner grouping box unfilled, and match its stroke to its peers.** A box that groups children owned by different vendors or clouds gets a white fill. A tinted fill reads as "all of this belongs to 1 vendor or 1 subsystem", which is false for such a box. Give it the same stroke color and stroke width as the existing boxes of its line style. Do not add a new stroke color or a thicker stroke to set it apart. Every extra variation makes the diagram busier and harder to read, and the label already names the box.
+
+(Set 2026-11-14, Copilot-Diagram.md. I gave the "Private Connectivity" and "Public Connectivity" boxes a new gray, 2px stroke. The user kept the white fill and reverted the color and width: *"Too much variations makes it visually busy which doesn't enhance readability, in fact, it reduces readability."*)
 
 ## Bidirectional Cross-Links
 
