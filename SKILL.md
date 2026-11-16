@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.36.0"
+  version: "1.38.0"
 ---
 
 # Tech Doc Authoring
@@ -36,6 +36,14 @@ Before you build a new section, table, or appendix, search the doc for content t
 ⛔ Do not build first and mention the overlap afterwards as a "choice to check". By then the user has spent a turn on work they may not have asked for if they had known.
 
 (Set 2026-11-16, Microsoft Infra Guide §10.1. The user asked for an appendix table of Microsoft-to-GCP mappings. Claude built it, then reported that §1.5 already held a similar table with about 15 overlapping rows. The user then had Claude merge §1.5 into §10.1: *"I wish you had told me that when I asked you to create the appendix."*)
+
+## Check the Whole Section You Edit
+
+**Drafting:** After you draft a section, and before you start the next one, re-read the draft as a separate structure pass. Look only for inline enumerations, comparisons, and counts in lead-ins. This applies above all to a long new doc. Measured 2026-11-16: The Microsoft Infra Guide, drafted in 1 session with this skill loaded, had about 20 violations. A later sweep, which looked for nothing else, found all of them. While drafting, attention goes to facts, quotes, and links, and an inline list reads fine one sentence at a time. So the check must be its own pass, not something you hope to notice while writing.
+
+**Editing:** When you edit part of a section, check the rest of that section against these rules in the same turn, even when the task touched only a table or a link. Fix a clear violation in passing, and name it in your reply. Do this at least for **List vs. Inline Enumeration** and **No Item Count in a List Lead-In**, because inline enumerations read fine sentence by sentence and nothing else flags them. Leave the user's own deliberate wording alone, per the rules below.
+
+(Set 2026-11-16, Microsoft Infra Guide §1.2. Claude spent a session hyperlinking §1.2's 2 tables and editing its sidebar, with this skill loaded, and left 3 bullets above the tables that enumerated inline: "names 3 different things: a, b, and c" and a 2-kind comparison. The user: *"I thought it's in the authoring skill, why didn't you do it?"*)
 
 ## Rewriting Is Authoring — Re-Ask the Shape
 
