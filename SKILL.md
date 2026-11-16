@@ -22,12 +22,20 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.35.0"
+  version: "1.36.0"
 ---
 
 # Tech Doc Authoring
 
 Apply these rules while writing or editing Markdown technical documentation. They are authoring-time rules — they shape what you produce. Auditing an already-written doc is a separate skill (`tech-doc-consistency-check`); general prose style (short sentences, active voice, plain words) stays in the user's global CLAUDE.md.
+
+## Check for Existing Coverage Before Adding Content
+
+Before you build a new section, table, or appendix, search the doc for content that already covers the same ground. If it overlaps, tell the user BEFORE you build, and name the existing section and how much it overlaps. Then let the user choose: extend the existing one, merge them, or build the new one anyway.
+
+⛔ Do not build first and mention the overlap afterwards as a "choice to check". By then the user has spent a turn on work they may not have asked for if they had known.
+
+(Set 2026-11-16, Microsoft Infra Guide §10.1. The user asked for an appendix table of Microsoft-to-GCP mappings. Claude built it, then reported that §1.5 already held a similar table with about 15 overlapping rows. The user then had Claude merge §1.5 into §10.1: *"I wish you had told me that when I asked you to create the appendix."*)
 
 ## Rewriting Is Authoring — Re-Ask the Shape
 
