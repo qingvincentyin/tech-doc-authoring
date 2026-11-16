@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.38.0"
+  version: "1.38.3"
 ---
 
 # Tech Doc Authoring
@@ -54,6 +54,26 @@ Before editing any passage longer than a sentence, re-ask the structural questio
 The cue is the task verb. *Rewrite*, *expand*, *complete*, *clarify* all read as sentence-level instructions and all can require a structural change to satisfy.
 
 (Set 2026-09-20. In one Infra Guide co-edit session Claude missed 2 rules in a row this way. Asked to complete a paragraph about the pre-token Lambda, Claude expanded it into 5 sentences of sequential prose — Cognito invokes → Lambda returns → Cognito mints — with **List vs. Inline Enumeration** loaded and explicitly naming that construction. The user restructured it into 3 bullets and asked: *"Why didn't you do that? You have an authoring rule that says to prefer bullets than a sequential prose."*)
+
+## Table Inside a List Item: Indent to the Item's Text Column
+
+To put a Markdown table inside a list item, indent every table row so it starts in the same column as the item's text, the first character after the marker and its space. Count the marker's width, not a fixed number:
+
+- `- Engine: …` text starts at column 3, so indent the table 2 spaces.
+- `1. Step …` text starts at column 4, so indent the table 3 spaces.
+- A nested `    - Sub …` text starts at column 7, so indent the table 6 spaces.
+
+Any other indent makes the user's viewer show the table as raw pipe text. 4 spaces under a `- ` item fails, although markdown-it renders it. Paragraphs in the same list item may keep a 4-space indent.
+
+```
+- Engine: The 2 agent kinds …:
+
+  | | Low-code | Pro-code |
+  |---|---|---|
+  | … | … | … |
+```
+
+(Set 2026-11-16, Microsoft Infra Guide §1.2. Claude indented a table 4 spaces under a `- ` bullet and checked it only with markdown-it, and the user's viewer showed pipe text. The user found the fix: 2 spaces, so the table *"starts at character number 3 of the line"*, matching where "Engine:" starts. Confirmed by screenshot.)
 
 ## Hard Line Breaks
 
