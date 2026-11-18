@@ -22,7 +22,7 @@ description: >
 license: Apache-2.0
 metadata:
   author: Vincent Yin
-  version: "1.38.3"
+  version: "1.39.0"
 ---
 
 # Tech Doc Authoring
@@ -114,6 +114,16 @@ Only anchor the doc's own captioned objects. A caption borrowed from an external
 For a line break inside any Mermaid label — node text, edge label, `note for ...`, subgraph title — use `<br/>`, never `\n`. `<br/>` is the portable break that renders everywhere the user's diagrams appear (GitHub, markdown-it, the consistency-check pipeline, artifacts). `\n` is renderer- and diagram-type-dependent: some renderers ignore it or print it literally. Standardizing on `<br/>` also matches the existing System Diagrams in the guides (which use `<br/>` and `&nbsp;`). Related global rule: call a connector between nodes an "arrow", not an "edge".
 
 Fold a node's annotation INTO the node, not into a floating note box. A `note for X` (classDiagram) or a detached note node renders as its own box, competing visually with the real nodes and pulling the reader's eye away from the topology. Put the annotation text inside the class body (or node label) instead. Reserve a separate note only when the annotation genuinely belongs to no single node. Prefer conveying a structural fact through the arrows themselves over restating it in text.
+
+### Every Link Moves the Layout
+
+**No Mermaid link is layout-neutral.** Every link feeds the layout engine, including an invisible `~~~` link and a dotted `-.-` line. Adding a single link (a "vNet Peering" line between 2 boxes) can re-rank the whole diagram. A subgraph adds no rank, but wrapping existing boxes in a new one can still shift the layout. Render before and after any added or removed link, and compare the 2 images.
+
+**An invisible link is a layout anchor.** Replacing a visible arrow with `a ~~~ b` keeps the ranking that arrow produced. Deleting it lets the layout re-flow.
+
+**`linkStyle` indices count every link, invisible ones included.** Links are numbered 0, 1, 2, … in declaration order. Add or delete a link, and every later index shifts. A `linkStyle N` whose index no longer exists stops the render with `TypeError: Cannot set properties of undefined (setting 'style')`. Renumber every `linkStyle` line in the same edit.
+
+**An arrow from a subgraph does not leave from the box's middle.** In every render tried (2026-11-17, 6 variants), the arrow left the subgraph level with 1 child box. An invisible wrapper subgraph and extra `~~~` links didn't centre it. That position implies the arrow belongs to that child, which misleads when the arrow means "the group as a whole". The user preferred 1 arrow per child box, even though it overstates the count, and a diagram note to correct the count. (Set 2026-11-17, Microsoft Infra Guide System Diagram 2: 1 ExpressRoute arrow from "Your Azure subscription" was tried and reverted to 2 arrows, 1 per vNet.)
 
 ### Diagram Color Must Survive Color Blindness
 
